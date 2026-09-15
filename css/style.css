@@ -1,0 +1,631 @@
+/**
+ * ====================================================================
+ * 🎂 Happy Birthday Faiza - Main Stylesheet
+ * ====================================================================
+ * Theme: Pink / Rose (#ff69b4, #ff1493)
+ * Modern, responsive CSS styling for 3D flipbook, matrix rain,
+ * floating hearts, fireworks, romantic typography, and animations.
+ */
+
+/* ====================================================================
+   1. Base & Reset
+   ==================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000000;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ====================================================================
+   2. Orientation Lock Overlay (Mobile Portrait)
+   ==================================================================== */
+#orientation-lock {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  color: #ffffff;
+  text-align: center;
+  padding: 20px;
+}
+
+.phone-icon,
+#orientation-lock .phone-icon {
+  font-size: 4rem;
+  margin-bottom: 24px;
+  animation: phone-bounce-smooth 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  display: inline-block;
+}
+
+/* ====================================================================
+   3. Canvas Layers
+   ==================================================================== */
+/* Matrix Rain Canvas */
+#matrix-rain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Main Particle Text Canvas */
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+}
+
+/* Fireworks Canvas */
+#firework-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9998;
+  pointer-events: none;
+}
+
+/* ====================================================================
+   4. Background Stars & Overlay Container
+   ==================================================================== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.stars-container {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.star {
+  position: absolute;
+  background: #ffffff;
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 0 6px #ffffff, 0 0 12px rgba(255, 105, 180, 0.8);
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+/* ====================================================================
+   5. Content Display Card (Birthday Message)
+   ==================================================================== */
+.content-display {
+  position: fixed;
+  top: 2%;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 650px;
+  width: 90%;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 40px;
+  z-index: 10;
+  display: none;
+  opacity: 0;
+  box-shadow: 0 15px 35px rgba(255, 105, 180, 0.4), 
+              0 0 25px rgba(255, 20, 147, 0.25),
+              inset 0 0 15px rgba(255, 182, 193, 0.2);
+  border: 1px solid rgba(255, 182, 193, 0.6);
+  text-align: center;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.content-display.show {
+  display: block;
+  opacity: 1;
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+/* Romantic Text Styling with Dancing Script */
+.content-display p,
+#contentText {
+  font-family: 'Dancing Script', cursive, sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.6;
+  margin: 0;
+  display: inline;
+  /* Romantic gradient in rich brown & rose tones */
+  background: linear-gradient(135deg, #3d1c1a 0%, #7b382d 30%, #5a2640 70%, #3d1c1a 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  animation: romanticText 5s ease infinite;
+}
+
+/* Heartbeat pseudo-element on the card */
+.content-display.show::after {
+  content: ' 💕';
+  display: inline-block;
+  font-size: 28px;
+  vertical-align: middle;
+  margin-left: 6px;
+  animation: heartbeat 1.5s ease-in-out infinite;
+  -webkit-text-fill-color: initial;
+}
+
+/* ====================================================================
+   6. Typewriter Blinking Cursor
+   ==================================================================== */
+.cursor,
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  background-color: #ff1493;
+  margin-left: 3px;
+  vertical-align: middle;
+  animation: blink 0.8s infinite;
+}
+
+/* ====================================================================
+   7. 3D Flip Book Styles
+   ==================================================================== */
+.book-container {
+  perspective: 2000px;
+  display: none;
+  opacity: 0;
+  transform: translateY(50px) scale(0.8);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  z-index: 20;
+  margin: 0 auto;
+}
+
+.book-container.show {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transform: translateY(80px) scale(1);
+}
+
+/* Glowing pseudo-element backdrop for the book */
+.book-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(255, 105, 180, 0.45) 0%, rgba(255, 20, 147, 0.2) 50%, transparent 75%);
+  filter: blur(30px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+.book {
+  width: 300px;
+  height: 400px;
+  position: relative;
+  transform-style: preserve-3d;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  user-select: none;
+}
+
+.page {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+  cursor: pointer;
+  border-radius: 8px;
+  will-change: transform;
+}
+
+.page.flipped {
+  transform: rotateY(-180deg);
+}
+
+.page-front, 
+.page-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background: #ffffff;
+}
+
+.page-front {
+  background: #ffffff;
+  box-shadow: inset 3px 0 10px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+
+.page-back {
+  background: #ffffff;
+  transform: rotateY(180deg);
+  box-shadow: inset -3px 0 10px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.page-text {
+  font-family: 'Dancing Script', 'Pacifico', cursive, sans-serif;
+  font-size: 22px;
+  color: #2c1810;
+  text-align: center;
+  padding: 24px;
+  line-height: 1.5;
+  text-shadow: 0 1px 3px rgba(255, 182, 193, 0.6);
+  pointer-events: none;
+}
+
+.page img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
+
+/* ====================================================================
+   8. Floating Hearts
+   ==================================================================== */
+.heart {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  color: #ff6b6b;
+  font-size: 20px;
+  user-select: none;
+  animation: float-heart 4s ease-in-out forwards;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 2px 8px rgba(255, 105, 180, 0.5));
+}
+
+/* ====================================================================
+   9. Firework Particle Styling
+   ==================================================================== */
+.firework-particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  will-change: transform, opacity;
+}
+
+/* ====================================================================
+   10. Interactive Controls (Music & Fullscreen)
+   ==================================================================== */
+#musicControl {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 10001;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+  color: #ffffff;
+  font-size: 20px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4), 0 0 10px rgba(255, 20, 147, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              box-shadow 0.3s ease,
+              background 0.3s ease;
+  user-select: none;
+}
+
+#musicControl:hover {
+  transform: scale(1.12);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6), 0 0 15px rgba(255, 20, 147, 0.5);
+}
+
+#musicControl:active {
+  transform: scale(0.92);
+}
+
+#fullscreenBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10001;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: rgba(31, 41, 55, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s ease, transform 0.2s ease;
+  user-select: none;
+}
+
+#fullscreenBtn:hover {
+  background: rgba(55, 65, 81, 0.95);
+  transform: translateY(-2px);
+}
+
+#fullscreenBtn:active {
+  transform: translateY(0);
+}
+
+/* ====================================================================
+   11. Animations & Keyframes
+   ==================================================================== */
+/* Floating Heart Animation */
+@keyframes float-heart {
+  0% {
+    transform: translateY(0) scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  15% {
+    transform: translateY(-50px) scale(1) rotate(-10deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-350px) scale(1.1) rotate(15deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-700px) scale(1.2) rotate(-20deg);
+    opacity: 0;
+  }
+}
+
+/* Heartbeat Pulse Animation */
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  15% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+  30% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  45% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Glow Pulse for Book Container */
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.45;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  50% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+/* Typewriter Cursor Blinking */
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Romantic Text Background Gradient Shift */
+@keyframes romanticText {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Star Twinkling Animation */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+}
+
+/* Phone Bounce for Orientation Screen */
+@keyframes phone-bounce-smooth {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-15px) rotate(-15deg);
+  }
+  50% {
+    transform: translateY(0) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-8px) rotate(15deg);
+  }
+}
+
+/* Fade In Animations */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes fadeOutScale {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+}
+
+/* ====================================================================
+   12. Responsive Design & Media Queries
+   ==================================================================== */
+@media (max-width: 768px) {
+  .content-display {
+    padding: 25px 20px;
+    max-width: 88%;
+    top: 4%;
+  }
+
+  .content-display p,
+  #contentText {
+    font-size: 22px;
+  }
+
+  .content-display.show::after {
+    font-size: 22px;
+  }
+
+  .book-container {
+    transform: translateY(30px) scale(0.7);
+  }
+
+  .book-container.show {
+    transform: translateY(50px) scale(0.85);
+  }
+
+  .book-container::before {
+    width: 320px;
+    height: 400px;
+  }
+
+  #musicControl {
+    bottom: 15px;
+    left: 15px;
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  #fullscreenBtn {
+    bottom: 15px;
+    right: 15px;
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-display {
+    padding: 20px 16px;
+    max-width: 92%;
+    border-radius: 16px;
+  }
+
+  .content-display p,
+  #contentText {
+    font-size: 19px;
+    line-height: 1.5;
+  }
+
+  .content-display.show::after {
+    font-size: 19px;
+  }
+
+  .book-container.show {
+    transform: translateY(35px) scale(0.72);
+  }
+
+  .page-text {
+    font-size: 18px;
+    padding: 16px;
+  }
+}
